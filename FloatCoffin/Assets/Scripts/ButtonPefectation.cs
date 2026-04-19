@@ -25,14 +25,12 @@ public class ButtonSoundAndHighlight : MonoBehaviour, IPointerEnterHandler, IPoi
     {
         if (audioSource && hoverSound)
             audioSource.PlayOneShot(hoverSound);
-
         if (outline) outline.enabled = true;
         if (buttonText) buttonText.color = hoverTextColor;
     }
     public void OnPointerExit(PointerEventData eventData)
     {
         if (outline) outline.enabled = false;
-
         if (buttonText) buttonText.color = normalTextColor;
     }
     public void OnPointerDown(PointerEventData eventData)
