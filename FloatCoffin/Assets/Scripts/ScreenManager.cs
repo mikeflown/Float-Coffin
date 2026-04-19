@@ -2,12 +2,11 @@ using UnityEngine;
 
 public class ScreenManager : MonoBehaviour
 {
-    [Header("Экраны")]
     public GameObject mainView;
     public GameObject stroboscopsView;
     public GameObject underWaterLeft;
     public GameObject underWaterRight;
-    [Header("Дополнительно")]
+    public GameObject tabletMenu;
     public GameObject progressPanel;
     private GameObject currentScreen;
     void Start()
@@ -17,6 +16,10 @@ public class ScreenManager : MonoBehaviour
     public void GoToStroboscops()
     {
         ShowScreen(stroboscopsView);
+    }
+    public void GoToTabletMenu()
+    {
+        ShowScreen(tabletMenu);
     }
     public void GoToUnderWaterLeft()
     {
@@ -32,17 +35,18 @@ public class ScreenManager : MonoBehaviour
         {
             ShowScreen(stroboscopsView);
         }
-        else if (currentScreen == stroboscopsView)
+        else if (currentScreen == stroboscopsView || currentScreen == tabletMenu)
         {
             ShowScreen(mainView);
         }
     }
     private void ShowScreen(GameObject screenToShow)
     {
-        mainView.SetActive(false);
-        stroboscopsView.SetActive(false);
-        underWaterLeft.SetActive(false);
-        underWaterRight.SetActive(false);
+        if (mainView != null) mainView.SetActive(false);
+        if (stroboscopsView != null) stroboscopsView.SetActive(false);
+        if (underWaterLeft != null) underWaterLeft.SetActive(false);
+        if (underWaterRight != null) underWaterRight.SetActive(false);
+        if (tabletMenu != null) tabletMenu.SetActive(false);
         if (screenToShow != null)
         {
             screenToShow.SetActive(true);
@@ -57,5 +61,9 @@ public class ScreenManager : MonoBehaviour
         {
             GoBack();
         }
+    }
+    public void ReturnToMainView()
+    {
+        ShowScreen(mainView);
     }
 }

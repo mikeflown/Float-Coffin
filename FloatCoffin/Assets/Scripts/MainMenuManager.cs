@@ -17,7 +17,6 @@ public class MainMenuManager : MonoBehaviour
     public void PlayGame()
     {
         SceneManager.LoadScene("Gameplay");
-        // Или: SceneManager.LoadScene(1); // ну допустим может быть буду использовать
     }
     public void OpenSettings()
     {
