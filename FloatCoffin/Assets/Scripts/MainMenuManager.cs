@@ -9,6 +9,8 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
+        GameObject[] menuButtons = GameObject.FindGameObjectsWithTag("MainMenuButton");
+        foreach (var btn in menuButtons) Destroy(btn);
         if (mainMenuPanel) mainMenuPanel.SetActive(true);
         if (settingsPanel) settingsPanel.SetActive(false);
     }
