@@ -6,7 +6,7 @@ public class MainScreenController : MonoBehaviour
 {
     [Header("UI элементы")]
     public Slider depthSlider;
-    public TextMeshProUGUI depthText;        // опционально
+    public TextMeshProUGUI depthText;
     private void OnEnable()
     {
         if (LevelProgressManager.Instance == null) return;

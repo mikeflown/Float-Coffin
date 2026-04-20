@@ -2,43 +2,63 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
-    public void SwitchSide()
-    {
-        side = (side == Side.Left) ? Side.Right : Side.Left;
-    }
     public MonsterType type;
-    public DistanceState currentDistance = DistanceState.Far;
-    public Monster.Side side = Monster.Side.Left;
-
+    public DistancePhase currentPhase = DistancePhase.Far;
+    public Side side = Side.Left;
     public enum Side { Left, Right, Center }
-
-    private float distanceValue = 1f; // 1 = Far → 0 = Close
-
-    public float approachSpeed = 0.6f; // скорость приближения
-
-    public void UpdateDistance(float deltaTime)
+    private float progress = 1f;
+    public float speed = 0.35f;
+    public Sprite type1FarLeft;
+    public Sprite type1FarRight;
+    public Sprite type1Stroboscope;
+    public Sprite type2Attack;
+    public Sprite type3Far;
+    public Sprite type3Medium;
+    public Sprite type3Near;
+    public Sprite type3Attack;
+    public void UpdatePhase(float deltaTime)
     {
-        distanceValue = Mathf.Max(0f, distanceValue - approachSpeed * deltaTime);
-
-        if (distanceValue <= 0.25f)      currentDistance = DistanceState.Close;
-        else if (distanceValue <= 0.65f) currentDistance = DistanceState.Medium;
-        else                             currentDistance = DistanceState.Far;
+        progress -= speed * deltaTime;
+        if (progress <= 0.1f) currentPhase = DistancePhase.Attack;
+        else if (progress <= 0.4f) currentPhase = DistancePhase.Near;
+        else if (progress <= 0.7f) currentPhase = DistancePhase.Medium;
+        else currentPhase = DistancePhase.Far;
     }
-
-    public void ResetMonster(MonsterType newType, Monster.Side newSide, float newApproachSpeed = 0.6f)
+    public void Reset(MonsterType newType, Side newSide, float newSpeed = 0.35f)
     {
         type = newType;
         side = newSide;
-        currentDistance = DistanceState.Far;
-        distanceValue = 1f;
-        approachSpeed = newApproachSpeed;
+        currentPhase = DistancePhase.Far;
+        progress = 1f;
+        speed = newSpeed;
     }
-
-    public bool IsVisibleOnRadar()
+    public Sprite GetCurrentSprite()
     {
-        if (type == MonsterType.Type1_Visual) return false;
-        if (type == MonsterType.Type2_RadarOnly) return true;
-        if (type == MonsterType.Type3_Central) return currentDistance == DistanceState.Close;
-        return false;
+        if (type == MonsterType.Type1_Visual)
+        {
+            if (currentPhase == DistancePhase.Far)
+                return (side == Side.Left) ? type1FarLeft : type1FarRight;
+            return type1Stroboscope;
+        }
+        else if (type == MonsterType.Type2_RadarOnly)
+        {
+            return (currentPhase == DistancePhase.Attack) ? type2Attack : null;
+        }
+        else if (type == MonsterType.Type3_Central)
+        {
+            switch (currentPhase)
+            {
+                case DistancePhase.Far:    return type3Far;
+                case DistancePhase.Medium: return type3Medium;
+                case DistancePhase.Near:   return type3Near;
+                case DistancePhase.Attack: return type3Attack;
+            }
+        }
+        return null;
     }
+    public bool ShouldShowOnMainWindow() => type == MonsterType.Type1_Visual && currentPhase == DistancePhase.Far;
+
+    public bool IsVisibleOnStroboscope() =>
+        (type == MonsterType.Type1_Visual && currentPhase >= DistancePhase.Medium) ||
+        (type == MonsterType.Type2_RadarOnly && currentPhase == DistancePhase.Attack);
 }
