@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
+    public void SwitchSide()
+    {
+        side = (side == Side.Left) ? Side.Right : Side.Left;
+    }
     public MonsterType type;
     public DistanceState currentDistance = DistanceState.Far;
     public Monster.Side side = Monster.Side.Left;

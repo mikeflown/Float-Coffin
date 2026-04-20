@@ -4,10 +4,7 @@ using UnityEngine.Events;
 public class MonsterManager : MonoBehaviour
 {
     public static MonsterManager Instance { get; private set; }
-    [Header("Контейнеры экранов (всегда активны)")]
-    public GameObject underWaterLeftContainer;
-    public GameObject underWaterRightContainer;
-    [Header("Объекты с картинкой монстра")]
+    [Header("Контейнеры и визуалы")]
     public GameObject monsterVisualLeft;
     public GameObject monsterVisualRight;
     public GameObject monsterVisualCenter;
@@ -15,12 +12,12 @@ public class MonsterManager : MonoBehaviour
     public RectTransform radarPanel;
     public GameObject radarBlipPrefab;
     public GameObject bigRedBlipPrefab;
-    [Header("Настройки")]
+    [Header("Настройки спавна")]
     public float minSpawnInterval = 10f;
     public float maxSpawnInterval = 25f;
     private float nextSpawnTime;
-    private Monster leftMonster;
-    private Monster rightMonster;
+    private Monster activeLeftMonster;
+    private Monster activeRightMonster;
     private Monster centerMonster;
     public UnityEvent onCloseLeft;
     public UnityEvent onCloseRight;
@@ -32,38 +29,40 @@ public class MonsterManager : MonoBehaviour
     }
     private void Start()
     {
-        leftMonster = CreateMonster("LeftMonster");
-        rightMonster = CreateMonster("RightMonster");
-        nextSpawnTime = Time.time + 8f;
+        nextSpawnTime = Time.time + 5f;
     }
-    private Monster CreateMonster(string name)
+    private Monster CreateNewMonster()
     {
-        GameObject go = new GameObject(name);
+        GameObject go = new GameObject("Monster");
         go.transform.SetParent(transform);
         return go.AddComponent<Monster>();
     }
     private void Update()
     {
-        if (leftMonster != null)   leftMonster.UpdateDistance(Time.deltaTime);
-        if (rightMonster != null)  rightMonster.UpdateDistance(Time.deltaTime);
-        if (centerMonster != null) centerMonster.UpdateDistance(Time.deltaTime);
-        UpdateVisuals();
+        if (activeLeftMonster != null)   activeLeftMonster.UpdateDistance(Time.deltaTime);
+        if (activeRightMonster != null)  activeRightMonster.UpdateDistance(Time.deltaTime);
+        if (centerMonster != null)       centerMonster.UpdateDistance(Time.deltaTime);
+        UpdateAllVisuals();
         if (Time.time >= nextSpawnTime)
         {
             SpawnRandomMonster();
             nextSpawnTime = Time.time + Random.Range(minSpawnInterval, maxSpawnInterval);
         }
     }
-    private void UpdateVisuals()
+    private void UpdateAllVisuals()
     {
-        UpdateMonsterVisual(leftMonster, monsterVisualLeft);
-        UpdateMonsterVisual(rightMonster, monsterVisualRight);
+        UpdateSideVisual(activeLeftMonster, monsterVisualLeft);
+        UpdateSideVisual(activeRightMonster, monsterVisualRight);
         UpdateCenterVisual();
         UpdateRadar();
     }
-    private void UpdateMonsterVisual(Monster monster, GameObject visualObject)
+    private void UpdateSideVisual(Monster monster, GameObject visualObject)
     {
-        if (visualObject == null || monster == null) return;
+        if (visualObject == null || monster == null) 
+        {
+            if (visualObject != null) visualObject.SetActive(false);
+            return;
+        }
         bool shouldShow = false;
         if (monster.type == MonsterType.Type2_RadarOnly)
         {
@@ -81,52 +80,77 @@ public class MonsterManager : MonoBehaviour
         if (monsterVisualCenter == null) return;
         bool shouldShow = centerMonster != null &&
                           centerMonster.type == MonsterType.Type3_Central &&
-                          centerMonster.currentDistance != DistanceState.Close; // далеко или средне
+                          centerMonster.currentDistance != DistanceState.Close;
         monsterVisualCenter.SetActive(shouldShow && AreHeadlightsOn());
     }
-    private bool AreHeadlightsOn() => true; // ← позже подключишь реальную систему фар
+    private bool AreHeadlightsOn() => true;
     private void UpdateRadar()
     {
         if (radarPanel == null) return;
-        // Очищаем предыдущие блики
-        foreach (Transform child in radarPanel)
-            Destroy(child.gameObject);
-        // Type 2 — всегда виден на радаре
-        if (leftMonster != null && leftMonster.IsVisibleOnRadar())
-            CreateRadarBlip(leftMonster, false);
-        if (rightMonster != null && rightMonster.IsVisibleOnRadar())
-            CreateRadarBlip(rightMonster, false);
-        // Type 3 — только когда Close, большой красный
+        foreach (Transform child in radarPanel) Destroy(child.gameObject);
+        if (activeLeftMonster != null && activeLeftMonster.IsVisibleOnRadar())
+            CreateRadarBlip(activeLeftMonster);
+        if (activeRightMonster != null && activeRightMonster.IsVisibleOnRadar())
+            CreateRadarBlip(activeRightMonster);
         if (centerMonster != null && centerMonster.IsVisibleOnRadar())
             CreateRadarBlip(centerMonster, true);
     }
-    private void CreateRadarBlip(Monster monster, bool isBigRed)
+    private void CreateRadarBlip(Monster monster, bool isBigRed = false)
     {
         GameObject prefab = isBigRed ? bigRedBlipPrefab : radarBlipPrefab;
         if (prefab == null) return;
-
         GameObject blip = Instantiate(prefab, radarPanel);
         RectTransform rt = blip.GetComponent<RectTransform>();
-
-        Vector2 basePos = monster.side == Monster.Side.Left ? new Vector2(-55, 0) : new Vector2(55, 0);
-
+        // Позиция зависит от стороны
+        Vector2 basePos = (monster.side == Monster.Side.Left) ? new Vector2(-55, 0) : new Vector2(55, 0);
         float closeness = monster.currentDistance == DistanceState.Close ? 0.15f :
                           monster.currentDistance == DistanceState.Medium ? 0.55f : 0.9f;
-
         rt.anchoredPosition = basePos * closeness;
     }
-    // ====================== Публичные методы для кнопок ======================
+    // ====================== СПАВН МОНСТРОВ ======================
+    private void SpawnRandomMonster()
+    {
+        int roll = Random.Range(0, 100);
+        if (roll < 45) // Левый или Правый монстр (Type 1 или 2)
+        {
+            bool isLeft = Random.value > 0.5f;
+            MonsterType type = Random.value > 0.5f ? MonsterType.Type1_Visual : MonsterType.Type2_RadarOnly;
+            Monster newMonster = CreateNewMonster();
+            newMonster.ResetMonster(type, isLeft ? Monster.Side.Left : Monster.Side.Right);
+            if (isLeft)
+            {
+                if (activeLeftMonster != null) Destroy(activeLeftMonster.gameObject);
+                activeLeftMonster = newMonster;
+            }
+            else
+            {
+                if (activeRightMonster != null) Destroy(activeRightMonster.gameObject);
+                activeRightMonster = newMonster;
+            }
+        }
+        else // Центр — только Type 3
+        {
+            if (centerMonster == null)
+                centerMonster = CreateNewMonster();
+            centerMonster.ResetMonster(MonsterType.Type3_Central, Monster.Side.Center, 0.45f);
+        }
+    }
+    // ====================== ОТПУГИВАНИЕ ======================
     public void RepelLeft()
     {
-        if (leftMonster != null)
-            leftMonster.ResetMonster(MonsterType.Type1_Visual, Monster.Side.Left);
-        onCloseLeft?.Invoke();
+        if (activeLeftMonster != null)
+        {
+            activeLeftMonster.ResetMonster(MonsterType.Type1_Visual, Monster.Side.Left);
+            onCloseLeft?.Invoke();
+        }
     }
     public void RepelRight()
     {
-        if (rightMonster != null)
-            rightMonster.ResetMonster(MonsterType.Type1_Visual, Monster.Side.Right);
-        onCloseRight?.Invoke();
+        if (activeRightMonster != null)
+        {
+            activeRightMonster.ResetMonster(MonsterType.Type1_Visual, Monster.Side.Right);
+            onCloseRight?.Invoke();
+        }
     }
     public void RepelCenter()
     {
@@ -135,20 +159,6 @@ public class MonsterManager : MonoBehaviour
             LevelProgressManager.Instance?.RollbackProgress(15f);
             centerMonster = null;
             onCloseCenter?.Invoke();
-        }
-    }
-    private void SpawnRandomMonster()
-    {
-        int r = Random.Range(0, 100);
-        if (r < 40)
-            leftMonster.ResetMonster(Random.value > 0.5f ? MonsterType.Type1_Visual : MonsterType.Type2_RadarOnly, Monster.Side.Left);
-        else if (r < 80)
-            rightMonster.ResetMonster(Random.value > 0.5f ? MonsterType.Type1_Visual : MonsterType.Type2_RadarOnly, Monster.Side.Right);
-        else
-        {
-            if (centerMonster == null)
-                centerMonster = CreateMonster("CenterMonster");
-            centerMonster.ResetMonster(MonsterType.Type3_Central, Monster.Side.Center, 0.45f);
         }
     }
 }

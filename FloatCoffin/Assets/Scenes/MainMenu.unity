@@ -1017,7 +1017,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ButtonSoundAndHighlight
   audioSource: {fileID: 1802579601}
   hoverSound: {fileID: 8300000, guid: bbe0439421ca6af4497d17ef7ebb884d, type: 3}
-  clickSound: {fileID: 8300000, guid: 28ee1153412c5d9418e4e347d1f34e31, type: 3}
+  clickSound: {fileID: 8300000, guid: 1d9ffa2f2d4bea7479b6c06375577e5e, type: 3}
   outline: {fileID: 1786613878}
   normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   hoverTextColor: {r: 0.22745098, g: 0.4117647, b: 0.41568628, a: 1}
@@ -1170,7 +1170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ButtonSoundAndHighlight
   audioSource: {fileID: 1802579601}
   hoverSound: {fileID: 8300000, guid: bbe0439421ca6af4497d17ef7ebb884d, type: 3}
-  clickSound: {fileID: 8300000, guid: 28ee1153412c5d9418e4e347d1f34e31, type: 3}
+  clickSound: {fileID: 8300000, guid: 1d9ffa2f2d4bea7479b6c06375577e5e, type: 3}
   outline: {fileID: 80523912}
   normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   hoverTextColor: {r: 0.22745098, g: 0.4117647, b: 0.41568628, a: 1}
@@ -1323,7 +1323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ButtonSoundAndHighlight
   audioSource: {fileID: 1802579601}
   hoverSound: {fileID: 8300000, guid: bbe0439421ca6af4497d17ef7ebb884d, type: 3}
-  clickSound: {fileID: 8300000, guid: 28ee1153412c5d9418e4e347d1f34e31, type: 3}
+  clickSound: {fileID: 8300000, guid: 1d9ffa2f2d4bea7479b6c06375577e5e, type: 3}
   outline: {fileID: 431480438}
   normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   hoverTextColor: {r: 0.22745098, g: 0.4117647, b: 0.41568628, a: 1}
@@ -1692,7 +1692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ButtonSoundAndHighlight
   audioSource: {fileID: 1802579601}
   hoverSound: {fileID: 8300000, guid: bbe0439421ca6af4497d17ef7ebb884d, type: 3}
-  clickSound: {fileID: 8300000, guid: 28ee1153412c5d9418e4e347d1f34e31, type: 3}
+  clickSound: {fileID: 8300000, guid: 1d9ffa2f2d4bea7479b6c06375577e5e, type: 3}
   outline: {fileID: 521479924}
   normalTextColor: {r: 0, g: 0, b: 0, a: 1}
   hoverTextColor: {r: 0.22745098, g: 0.4117647, b: 0.41568628, a: 1}
@@ -2049,7 +2049,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
+  m_Volume: 0.453
   m_Pitch: 1
   Loop: 0
   Mute: 0
