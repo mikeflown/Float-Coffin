@@ -1,184 +1,65 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Events;
 
 public class MonsterManager : MonoBehaviour
 {
     public static MonsterManager Instance { get; private set; }
-    [Header("Визуалы")]
-    public GameObject[] silhouetteLeft;
-    public GameObject[] silhouetteRight;
-    public GameObject monsterVisualCenter;
-    public GameObject monsterVisualLeft;
-    public GameObject monsterVisualRight;
-    [Header("Радар")]
-    public RectTransform radarPanel;
-    public GameObject radarBlipPrefab;
-    [Header("Спрайты")]
-    public Sprite type1FarLeft;
-    public Sprite type1FarRight;
-    public Sprite type1Stroboscope;
-    public Sprite type2Attack;
-    public Sprite type3Far;
-    public Sprite type3Medium;
-    public Sprite type3Near;
-    public Sprite type3Attack;
-    [Header("HP")]
-    public int shipHP = 3;
-    public UnityEvent onShipHit;
-    public UnityEvent onGameOver;
+    [Header("Главный экран (только кадр 0)")]
+    public GameObject silhouetteLeft;
+    public GameObject silhouetteRight;
+    [Header("Левый стробоскоп (кадры 1, 2, 3)")]
+    public GameObject[] leftFrames = new GameObject[3];
+    [Header("Правый стробоскоп (кадры 1, 2, 3)")]
+    public GameObject[] rightFrames = new GameObject[3];
+    [Header("Настройки анимации")]
+    [Header("Время кадра")]
+    public float[] minFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
+    public float[] maxFrameTimes = new float[4] { 4.0f, 3.2f, 2.5f, 1.5f };
+    public float[] frameDurations = new float[4] { 1.5f, 1.2f, 1.0f, 0.8f };
     [Header("Спавн")]
-    public float minSpawnInterval = 8f;
-    public float maxSpawnInterval = 22f;
-    private Monster currentSideMonster;
-    private Monster currentCenterMonster;
-    private float nextSpawnTime = 0f;
-    private float nextSideCheck = 0f;
-    private float nextCenterCheck = 0f;
+    public float minSpawnTime = 12f;
+    public float maxSpawnTime = 25f;
+    private MonsterType1 currentMonster;
+    private float nextSpawnTime;
     private void Awake() => Instance = this;
     private void Start()
     {
-        nextSpawnTime = Time.time + 2f;
-        nextSideCheck = Time.time + 8f;
-        nextCenterCheck = Time.time + 25f;
+        nextSpawnTime = Time.time + 5f;
     }
     private void Update()
     {
-        if (currentSideMonster != null) currentSideMonster.UpdatePhase(Time.deltaTime);
-        if (currentCenterMonster != null) currentCenterMonster.UpdatePhase(Time.deltaTime);
-        UpdateVisuals();
-        if (Time.time >= nextSideCheck)
-        {
-            TrySideAttack();
-            nextSideCheck = Time.time + 8f;
-        }
-        if (Time.time >= nextCenterCheck)
-        {
-            TryCenterAttack();
-            nextCenterCheck = Time.time + 30f;
-        }
+        if (currentMonster != null)
+            UpdateVisuals();
         if (Time.time >= nextSpawnTime)
         {
-            SpawnRandomMonster();
-            nextSpawnTime = Time.time + Random.Range(minSpawnInterval, maxSpawnInterval);
+            SpawnType1();
+            nextSpawnTime = Time.time + Random.Range(minSpawnTime, maxSpawnTime);
         }
     }
-    private void SpawnRandomMonster()
+    private void SpawnType1()
     {
-        int roll = Random.Range(0, 100);
-        if (roll < 65)
-        {
-            bool isLeft = Random.value > 0.5f;
-            MonsterType mType = Random.value > 0.5f ? MonsterType.Type1_Visual : MonsterType.Type2_RadarOnly;
-            Monster m = CreateMonster();
-            m.Reset(mType, isLeft ? Monster.Side.Left : Monster.Side.Right, Random.Range(0.3f, 0.48f));
-            if (currentSideMonster != null) Destroy(currentSideMonster.gameObject);
-            currentSideMonster = m;
-        }
-        else
-        {
-            if (currentCenterMonster == null) currentCenterMonster = CreateMonster();
-            currentCenterMonster.Reset(MonsterType.Type3_Central, Monster.Side.Center, 0.28f);
-        }
-    }
-    private Monster CreateMonster()
-    {
-        GameObject go = new GameObject("Monster");
-        go.transform.SetParent(transform);
-        Monster m = go.AddComponent<Monster>();
-        m.type1FarLeft = type1FarLeft;
-        m.type1FarRight = type1FarRight;
-        m.type1Stroboscope = type1Stroboscope;
-        m.type2Attack = type2Attack;
-        m.type3Far = type3Far;
-        m.type3Medium = type3Medium;
-        m.type3Near = type3Near;
-        m.type3Attack = type3Attack;
-        return m;
+        if (currentMonster != null) Destroy(currentMonster.gameObject);
+        GameObject go = new GameObject("Type1_Monster");
+        currentMonster = go.AddComponent<MonsterType1>();
+        bool goingLeft = Random.Range(0, 2) == 0;
+        currentMonster.Initialize(goingLeft, minFrameTimes, maxFrameTimes);
     }
     private void UpdateVisuals()
     {
-        bool showDirection = currentSideMonster != null && currentSideMonster.ShouldShowOnMainWindow();
-        foreach (var s in silhouetteLeft)  if (s != null) s.SetActive(showDirection && currentSideMonster.side == Monster.Side.Left);
-        foreach (var s in silhouetteRight) if (s != null) s.SetActive(showDirection && currentSideMonster.side == Monster.Side.Right);
-        bool leftVis = currentSideMonster != null && currentSideMonster.side == Monster.Side.Left && currentSideMonster.IsVisibleOnStroboscope();
-        bool rightVis = currentSideMonster != null && currentSideMonster.side == Monster.Side.Right && currentSideMonster.IsVisibleOnStroboscope();
-        if (monsterVisualLeft)
+        if (currentMonster == null) return;
+        int frame = currentMonster.currentFrame;
+        bool left = currentMonster.isGoingLeft;
+        bool showSilhouette = (frame == 0);
+        if (silhouetteLeft)  silhouetteLeft.SetActive(showSilhouette && left);
+        if (silhouetteRight) silhouetteRight.SetActive(showSilhouette && !left);
+        foreach (var obj in leftFrames)  if (obj) obj.SetActive(false);
+        foreach (var obj in rightFrames) if (obj) obj.SetActive(false);
+        if (frame >= 1 && frame <= 3)
         {
-            monsterVisualLeft.SetActive(leftVis);
-            if (leftVis) ApplySprite(monsterVisualLeft, currentSideMonster.GetCurrentSprite());
+            int stroboscopeIndex = frame - 1;
+            if (left && leftFrames[stroboscopeIndex])
+                leftFrames[stroboscopeIndex].SetActive(true);
+            if (!left && rightFrames[stroboscopeIndex])
+                rightFrames[stroboscopeIndex].SetActive(true);
         }
-        if (monsterVisualRight)
-        {
-            monsterVisualRight.SetActive(rightVis);
-            if (rightVis) ApplySprite(monsterVisualRight, currentSideMonster.GetCurrentSprite());
-        }
-        if (monsterVisualCenter)
-        {
-            bool show = currentCenterMonster != null && currentCenterMonster.currentPhase < DistancePhase.Attack;
-            monsterVisualCenter.SetActive(show);
-            if (show) ApplySprite(monsterVisualCenter, currentCenterMonster.GetCurrentSprite());
-        }
-        UpdateRadar();
-    }
-    private void ApplySprite(GameObject obj, Sprite sprite)
-    {
-        if (obj == null || sprite == null) return;
-        Image img = obj.GetComponent<Image>();
-        if (img != null) img.sprite = sprite;
-    }
-    private void UpdateRadar()
-    {
-        if (radarPanel == null) return;
-        foreach (Transform child in radarPanel) Destroy(child.gameObject);
-        if (currentSideMonster != null && currentSideMonster.type == MonsterType.Type2_RadarOnly)
-        {
-            GameObject blip = Instantiate(radarBlipPrefab, radarPanel);
-            RectTransform rt = blip.GetComponent<RectTransform>();
-            float closeness = currentSideMonster.currentPhase == DistancePhase.Far ? 0.9f :
-                              currentSideMonster.currentPhase == DistancePhase.Medium ? 0.6f :
-                              currentSideMonster.currentPhase == DistancePhase.Near ? 0.3f : 0.1f;
-            Vector2 pos = currentSideMonster.side == Monster.Side.Left ? new Vector2(-65, 0) : new Vector2(65, 0);
-            rt.anchoredPosition = pos * closeness;
-        }
-    }
-    private void TrySideAttack()
-    {
-        if (currentSideMonster == null || currentSideMonster.currentPhase != DistancePhase.Attack) return;
-        ShipHit();
-        currentSideMonster = null;
-    }
-    private void TryCenterAttack()
-    {
-        if (currentCenterMonster == null || currentCenterMonster.currentPhase != DistancePhase.Attack) return;
-        LevelProgressManager.Instance?.RollbackProgress(10f);
-        ShipHit();
-        currentCenterMonster = null;
-    }
-    private void ShipHit()
-    {
-        shipHP--;
-        onShipHit?.Invoke();
-        if (shipHP <= 0) onGameOver?.Invoke();
-    }
-    public void RepelWithLight()
-    {
-        if (currentSideMonster != null)
-        {
-            if (currentSideMonster.type == MonsterType.Type1_Visual) currentSideMonster = null;
-            else ShipHit();
-        }
-    }
-    public void RepelWithSound()
-    {
-        if (currentSideMonster != null)
-        {
-            if (currentSideMonster.type == MonsterType.Type2_RadarOnly) currentSideMonster = null;
-            else ShipHit();
-        }
-    }
-    public void RepelCenter()
-    {
-        if (currentCenterMonster != null) currentCenterMonster = null;
     }
 }
