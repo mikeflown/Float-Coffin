@@ -5,7 +5,7 @@ public class MonsterManager : MonoBehaviour
     public static MonsterManager Instance { get; private set; }
 
     // ==================== TYPE 1 ====================
-    [Header("Type 1 Настройки")]
+    [Header("Type 1")]
     public float type1MinSpawnTime = 12f;
     public float type1MaxSpawnTime = 25f;
     public float[] type1MinFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
@@ -17,28 +17,39 @@ public class MonsterManager : MonoBehaviour
     public GameObject[] rightFramesType1 = new GameObject[3];
 
     // ==================== TYPE 2 ====================
-    [Header("Type 2 Настройки")]
+    [Header("Type 2")]
     public float type2MinSpawnTime = 15f;
     public float type2MaxSpawnTime = 30f;
     public float[] type2MinPhaseTimes = new float[4] { 3.0f, 2.5f, 2.0f, 1.2f };
     public float[] type2MaxPhaseTimes = new float[4] { 5.5f, 4.5f, 3.5f, 2.0f };
-    [Header("Type 2 Стробоскоп")]
+    [Header("Type 2 Визуалы")]
     public GameObject leftFrameType2_Phase2;
     public GameObject leftFrameType2_Phase3;
     public GameObject rightFrameType2_Phase2;
     public GameObject rightFrameType2_Phase3;
-    [Header("Type 2 Радар")]
     public GameObject[] leftRadarImages = new GameObject[4];
     public GameObject[] rightRadarImages = new GameObject[4];
+
+    // ==================== TYPE 3 ====================
+    [Header("Type 3")]
+    public float type3MinSpawnTime = 25f;
+    public float type3MaxSpawnTime = 45f;
+    public float[] type3MinPhaseTimes = new float[3] { 5.0f, 3.5f, 2.0f };
+    public float[] type3MaxPhaseTimes = new float[3] { 8.0f, 5.5f, 3.5f };
+    [Header("Type 3 Визуалы")]
+    public GameObject[] centerFramesType3 = new GameObject[3];
     private MonsterType1 currentType1;
     private MonsterType2 currentType2;
+    private MonsterType3 currentType3;
     private float nextType1Spawn;
     private float nextType2Spawn;
+    private float nextType3Spawn;
     private void Awake() => Instance = this;
     private void Start()
     {
         nextType1Spawn = Time.time + 8f;
         nextType2Spawn = Time.time + 12f;
+        nextType3Spawn = Time.time + 20f;
     }
     private void Update()
     {
@@ -52,6 +63,11 @@ public class MonsterManager : MonoBehaviour
         {
             SpawnType2();
             nextType2Spawn = Time.time + Random.Range(type2MinSpawnTime, type2MaxSpawnTime);
+        }
+        if (Time.time >= nextType3Spawn)
+        {
+            SpawnType3();
+            nextType3Spawn = Time.time + Random.Range(type3MinSpawnTime, type3MaxSpawnTime);
         }
     }
     private void SpawnType1()
@@ -70,6 +86,13 @@ public class MonsterManager : MonoBehaviour
         bool goingLeft = Random.Range(0, 2) == 0;
         currentType2.Initialize(goingLeft, type2MinPhaseTimes, type2MaxPhaseTimes);
     }
+    private void SpawnType3()
+    {
+        if (currentType3 != null) Destroy(currentType3.gameObject);
+        GameObject go = new GameObject("Type3");
+        currentType3 = go.AddComponent<MonsterType3>();
+        currentType3.Initialize(type3MinPhaseTimes, type3MaxPhaseTimes);
+    }
     private void UpdateVisuals()
     {
         if (silhouetteLeft) silhouetteLeft.SetActive(false);
@@ -80,28 +103,27 @@ public class MonsterManager : MonoBehaviour
         if (leftFrameType2_Phase3) leftFrameType2_Phase3.SetActive(false);
         if (rightFrameType2_Phase2) rightFrameType2_Phase2.SetActive(false);
         if (rightFrameType2_Phase3) rightFrameType2_Phase3.SetActive(false);
+        foreach (var f in centerFramesType3) if (f) f.SetActive(false);
         foreach (var img in leftRadarImages) if (img) img.SetActive(false);
         foreach (var img in rightRadarImages) if (img) img.SetActive(false);
-        
-        // === TYPE 1 ===
         if (currentType1 != null)
         {
             int frame = currentType1.currentFrame;
             bool left = currentType1.isGoingLeft;
-
             if (frame == 0)
             {
                 if (silhouetteLeft) silhouetteLeft.SetActive(left);
                 if (silhouetteRight) silhouetteRight.SetActive(!left);
             }
-            else if (frame >= 1 && frame <= 3 && frame - 1 < leftFramesType1.Length)
+            else if (frame >= 1 && frame <= 3)
             {
                 int idx = frame - 1;
                 if (left && leftFramesType1[idx]) leftFramesType1[idx].SetActive(true);
                 if (!left && rightFramesType1[idx]) rightFramesType1[idx].SetActive(true);
             }
         }
-        // === TYPE 2 ===
+
+        // Type 2
         if (currentType2 != null)
         {
             int phase = currentType2.currentPhase;
@@ -116,14 +138,18 @@ public class MonsterManager : MonoBehaviour
                 if (left && leftFrameType2_Phase3) leftFrameType2_Phase3.SetActive(true);
                 if (!left && rightFrameType2_Phase3) rightFrameType2_Phase3.SetActive(true);
             }
-            // === РАДАР ===
             if (phase >= 0 && phase < 4)
             {
-                if (left && phase < leftRadarImages.Length && leftRadarImages[phase] != null)
-                    leftRadarImages[phase].SetActive(true);
-
-                if (!left && phase < rightRadarImages.Length && rightRadarImages[phase] != null)
-                    rightRadarImages[phase].SetActive(true);
+                if (left && leftRadarImages[phase]) leftRadarImages[phase].SetActive(true);
+                if (!left && rightRadarImages[phase]) rightRadarImages[phase].SetActive(true);
+            }
+        }
+        if (currentType3 != null)
+        {
+            int phase = currentType3.currentPhase;
+            if (phase >= 0 && phase < 3 && centerFramesType3[phase])
+            {
+                centerFramesType3[phase].SetActive(true);
             }
         }
     }

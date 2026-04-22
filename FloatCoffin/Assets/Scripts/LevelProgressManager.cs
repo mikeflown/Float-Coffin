@@ -5,9 +5,9 @@ public class LevelProgressManager : MonoBehaviour
 {
     public static LevelProgressManager Instance { get; private set; }
     [Header("Настройки уровня")]
-    [Tooltip("Общая длина уровня (чем больше — тем длиннее уровень)")]
+    [Tooltip("Общая длина уровня")]
     public float levelLength = 100f;
-    [Tooltip("Скорость продвижения при работающем двигателе (единиц в секунду)")]
+    [Tooltip("Скорость продвижения при работающем двигателе")]
     public float baseProgressSpeed = 8f;
     [Header("Текущее состояние")]
     public float currentProgress = 0f;
@@ -27,17 +27,13 @@ public class LevelProgressManager : MonoBehaviour
     private void Update()
     {
         if (!isEngineWorking) return;
-
         currentProgress += baseProgressSpeed * Time.deltaTime;
-
         if (currentProgress >= levelLength)
         {
             currentProgress = levelLength;
-            onLevelCompleted?.Invoke();
-            enabled = false;
+            WinLevel();
             return;
         }
-
         float normalized = Mathf.Clamp01(currentProgress / levelLength);
         onProgressChanged?.Invoke(normalized);
     }
@@ -57,6 +53,14 @@ public class LevelProgressManager : MonoBehaviour
         currentProgress = 0f;
         isEngineWorking = true;
         enabled = true;
+    }
+    private void WinLevel()
+    {
+        isEngineWorking = false;
+        enabled = false;
+        Debug.Log("ПОБЕДА!");
+        // Здесь позже добавим красивый экран победы
+        Time.timeScale = 0f;
     }
     public float GetNormalizedProgress() => currentProgress / levelLength;
 }
