@@ -780,6 +780,7 @@ GameObject:
   - component: {fileID: 127979450}
   - component: {fileID: 127979452}
   - component: {fileID: 127979451}
+  - component: {fileID: 127979453}
   m_Layer: 5
   m_Name: Strabo L
   m_TagString: Untagged
@@ -846,6 +847,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127979449}
   m_CullTransparentMesh: 1
+--- !u!114 &127979453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127979449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adee413364d90d41ba7e0a761fedf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemPowerToggle
+  systemName: StrobeLeft
+  offButton: {fileID: 450189930}
+  onButton: {fileID: 1710386394}
+  powerIcon: {fileID: 2096357317}
 --- !u!1 &136752333
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,7 +1374,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &264196832
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1764,7 +1781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &345485102
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2790,7 +2807,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &450189929
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2968,6 +2985,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 523390239}
   m_CullTransparentMesh: 1
+--- !u!1 &525875500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525875501}
+  m_Layer: 5
+  m_Name: Power
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &525875501
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525875500}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1947079073}
+  - {fileID: 1760886044}
+  m_Father: {fileID: 1535925217}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &533737562
 GameObject:
   m_ObjectHideFlags: 0
@@ -3054,6 +3108,7 @@ GameObject:
   - component: {fileID: 558597943}
   - component: {fileID: 558597945}
   - component: {fileID: 558597944}
+  - component: {fileID: 558597946}
   m_Layer: 5
   m_Name: Strabo R
   m_TagString: Untagged
@@ -3120,6 +3175,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 558597942}
   m_CullTransparentMesh: 1
+--- !u!114 &558597946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 558597942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adee413364d90d41ba7e0a761fedf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemPowerToggle
+  systemName: StrobeRight
+  offButton: {fileID: 1882339025}
+  onButton: {fileID: 1389863604}
+  powerIcon: {fileID: 1625265954}
 --- !u!1 &560451407
 GameObject:
   m_ObjectHideFlags: 0
@@ -3706,12 +3777,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnergyManager
   maxPower: 5
-  currentPower: 5
-  oxygen: 1
-  strobeLeft: 1
-  strobeRight: 1
-  radar: 1
-  engine: 2
+  usedPower: 0
+  oxygenOn: 0
+  engineOn: 0
+  radarOn: 0
+  strobeLeftOn: 0
+  strobeRightOn: 0
 --- !u!1 &618355938
 GameObject:
   m_ObjectHideFlags: 0
@@ -3723,6 +3794,7 @@ GameObject:
   - component: {fileID: 618355939}
   - component: {fileID: 618355941}
   - component: {fileID: 618355940}
+  - component: {fileID: 618355942}
   m_Layer: 5
   m_Name: Radar
   m_TagString: Untagged
@@ -3789,6 +3861,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 618355938}
   m_CullTransparentMesh: 1
+--- !u!114 &618355942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618355938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adee413364d90d41ba7e0a761fedf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemPowerToggle
+  systemName: Radar
+  offButton: {fileID: 77052649}
+  onButton: {fileID: 1798982391}
+  powerIcon: {fileID: 2067028283}
 --- !u!1 &626671540
 GameObject:
   m_ObjectHideFlags: 0
@@ -4345,7 +4433,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &759374505
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4465,7 +4553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &762214630
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5108,7 +5196,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 1
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -5934,6 +6022,7 @@ GameObject:
   - component: {fileID: 1021480187}
   - component: {fileID: 1021480189}
   - component: {fileID: 1021480188}
+  - component: {fileID: 1021480190}
   m_Layer: 5
   m_Name: H2O
   m_TagString: Untagged
@@ -6000,6 +6089,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021480186}
   m_CullTransparentMesh: 1
+--- !u!114 &1021480190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021480186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adee413364d90d41ba7e0a761fedf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemPowerToggle
+  systemName: Oxygen
+  offButton: {fileID: 345485103}
+  onButton: {fileID: 759374506}
+  powerIcon: {fileID: 383907091}
 --- !u!1 &1030533422
 GameObject:
   m_ObjectHideFlags: 0
@@ -6359,6 +6464,7 @@ GameObject:
   - component: {fileID: 1106100679}
   - component: {fileID: 1106100681}
   - component: {fileID: 1106100680}
+  - component: {fileID: 1106100682}
   m_Layer: 5
   m_Name: Engine
   m_TagString: Untagged
@@ -6425,6 +6531,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1106100678}
   m_CullTransparentMesh: 1
+--- !u!114 &1106100682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106100678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4adee413364d90d41ba7e0a761fedf4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemPowerToggle
+  systemName: Engine
+  offButton: {fileID: 1535925218}
+  onButton: {fileID: 762214631}
+  powerIcon: {fileID: 525875500}
 --- !u!1 &1113621074
 GameObject:
   m_ObjectHideFlags: 0
@@ -6443,7 +6565,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &1113621075
 AudioListener:
   m_ObjectHideFlags: 0
@@ -8139,7 +8261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1389863603
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9111,7 +9233,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1535925217
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9124,8 +9246,7 @@ RectTransform:
   m_LocalScale: {x: 0.99964803, y: 0.99964803, z: 0.99964803}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1947079073}
-  - {fileID: 1760886044}
+  - {fileID: 525875501}
   m_Father: {fileID: 1106100679}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -9931,7 +10052,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1710386393
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10346,7 +10467,7 @@ RectTransform:
   m_LocalScale: {x: 1.0003523, y: 1.0003523, z: 1.0003523}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1535925217}
+  m_Father: {fileID: 525875501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -11091,7 +11212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1882339024
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11521,7 +11642,7 @@ RectTransform:
   m_LocalScale: {x: 1.0003523, y: 1.0003523, z: 1.0003523}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1535925217}
+  m_Father: {fileID: 525875501}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
