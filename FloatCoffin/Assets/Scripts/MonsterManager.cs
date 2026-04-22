@@ -3,63 +3,107 @@ using UnityEngine;
 public class MonsterManager : MonoBehaviour
 {
     public static MonsterManager Instance { get; private set; }
-    [Header("Главный экран (только кадр 0)")]
+    [Header("Type 1 Настройки")]
+    public float type1MinSpawnTime = 12f;
+    public float type1MaxSpawnTime = 25f;
+    public float[] type1MinFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
+    public float[] type1MaxFrameTimes = new float[4] { 4.0f, 3.2f, 2.5f, 1.5f };
+    [Header("Type 2 Настройки")]
+    public float type2MinSpawnTime = 15f;
+    public float type2MaxSpawnTime = 30f;
+    public float[] type2MinPhaseTimes = new float[4] { 3.0f, 2.5f, 2.0f, 1.2f };
+    public float[] type2MaxPhaseTimes = new float[4] { 5.5f, 4.5f, 3.5f, 2.0f };
+    [Header("Визуалы Type 1")]
     public GameObject silhouetteLeft;
     public GameObject silhouetteRight;
-    [Header("Левый стробоскоп (кадры 1, 2, 3)")]
-    public GameObject[] leftFrames = new GameObject[3];
-    [Header("Правый стробоскоп (кадры 1, 2, 3)")]
-    public GameObject[] rightFrames = new GameObject[3];
-    [Header("Настройки анимации")]
-    [Header("Время кадра")]
-    public float[] minFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
-    public float[] maxFrameTimes = new float[4] { 4.0f, 3.2f, 2.5f, 1.5f };
-    public float[] frameDurations = new float[4] { 1.5f, 1.2f, 1.0f, 0.8f };
-    [Header("Спавн")]
-    public float minSpawnTime = 12f;
-    public float maxSpawnTime = 25f;
-    private MonsterType1 currentMonster;
-    private float nextSpawnTime;
+    public GameObject[] leftFramesType1 = new GameObject[3];
+    public GameObject[] rightFramesType1 = new GameObject[3];
+    [Header("Визуалы Type 2")]
+    public GameObject leftFrameType2_Phase2;
+    public GameObject leftFrameType2_Phase3;
+    public GameObject rightFrameType2_Phase2;
+    public GameObject rightFrameType2_Phase3;
+    private MonsterType1 currentType1;
+    private MonsterType2 currentType2;
+    private float nextType1Spawn;
+    private float nextType2Spawn;
     private void Awake() => Instance = this;
     private void Start()
     {
-        nextSpawnTime = Time.time + 5f;
+        nextType1Spawn = Time.time + 8f;
+        nextType2Spawn = Time.time + 12f;
     }
     private void Update()
     {
-        if (currentMonster != null)
-            UpdateVisuals();
-        if (Time.time >= nextSpawnTime)
+        UpdateVisuals();
+        if (Time.time >= nextType1Spawn)
         {
             SpawnType1();
-            nextSpawnTime = Time.time + Random.Range(minSpawnTime, maxSpawnTime);
+            nextType1Spawn = Time.time + Random.Range(type1MinSpawnTime, type1MaxSpawnTime);
+        }
+        if (Time.time >= nextType2Spawn)
+        {
+            SpawnType2();
+            nextType2Spawn = Time.time + Random.Range(type2MinSpawnTime, type2MaxSpawnTime);
         }
     }
     private void SpawnType1()
     {
-        if (currentMonster != null) Destroy(currentMonster.gameObject);
-        GameObject go = new GameObject("Type1_Monster");
-        currentMonster = go.AddComponent<MonsterType1>();
+        if (currentType1 != null) Destroy(currentType1.gameObject);
+        GameObject go = new GameObject("Type1");
+        currentType1 = go.AddComponent<MonsterType1>();
         bool goingLeft = Random.Range(0, 2) == 0;
-        currentMonster.Initialize(goingLeft, minFrameTimes, maxFrameTimes);
+        currentType1.Initialize(goingLeft, type1MinFrameTimes, type1MaxFrameTimes);
+    }
+    private void SpawnType2()
+    {
+        if (currentType2 != null) Destroy(currentType2.gameObject);
+        GameObject go = new GameObject("Type2");
+        currentType2 = go.AddComponent<MonsterType2>();
+        bool goingLeft = Random.Range(0, 2) == 0;
+        currentType2.Initialize(goingLeft, type2MinPhaseTimes, type2MaxPhaseTimes);
     }
     private void UpdateVisuals()
     {
-        if (currentMonster == null) return;
-        int frame = currentMonster.currentFrame;
-        bool left = currentMonster.isGoingLeft;
-        bool showSilhouette = (frame == 0);
-        if (silhouetteLeft)  silhouetteLeft.SetActive(showSilhouette && left);
-        if (silhouetteRight) silhouetteRight.SetActive(showSilhouette && !left);
-        foreach (var obj in leftFrames)  if (obj) obj.SetActive(false);
-        foreach (var obj in rightFrames) if (obj) obj.SetActive(false);
-        if (frame >= 1 && frame <= 3)
+        if (silhouetteLeft) silhouetteLeft.SetActive(false);
+        if (silhouetteRight) silhouetteRight.SetActive(false);
+        foreach (var f in leftFramesType1) if (f) f.SetActive(false);
+        foreach (var f in rightFramesType1) if (f) f.SetActive(false);
+        if (leftFrameType2_Phase2) leftFrameType2_Phase2.SetActive(false);
+        if (leftFrameType2_Phase3) leftFrameType2_Phase3.SetActive(false);
+        if (rightFrameType2_Phase2) rightFrameType2_Phase2.SetActive(false);
+        if (rightFrameType2_Phase3) rightFrameType2_Phase3.SetActive(false);
+        if (currentType1 != null)
         {
-            int stroboscopeIndex = frame - 1;
-            if (left && leftFrames[stroboscopeIndex])
-                leftFrames[stroboscopeIndex].SetActive(true);
-            if (!left && rightFrames[stroboscopeIndex])
-                rightFrames[stroboscopeIndex].SetActive(true);
+            int frame = currentType1.currentFrame;
+            bool left = currentType1.isGoingLeft;
+
+            if (frame == 0)
+            {
+                if (silhouetteLeft) silhouetteLeft.SetActive(left);
+                if (silhouetteRight) silhouetteRight.SetActive(!left);
+            }
+            else if (frame >= 1 && frame <= 3)
+            {
+                int idx = frame - 1;
+                if (left && leftFramesType1[idx]) leftFramesType1[idx].SetActive(true);
+                if (!left && rightFramesType1[idx]) rightFramesType1[idx].SetActive(true);
+            }
+        }
+        if (currentType2 != null)
+        {
+            int phase = currentType2.currentPhase;
+            bool left = currentType2.isGoingLeft;
+            if (phase == 2)
+            {
+                if (left && leftFrameType2_Phase2) leftFrameType2_Phase2.SetActive(true);
+                if (!left && rightFrameType2_Phase2) rightFrameType2_Phase2.SetActive(true);
+            }
+            else if (phase == 3)
+            {
+                if (left && leftFrameType2_Phase3) leftFrameType2_Phase3.SetActive(true);
+                if (!left && rightFrameType2_Phase3) rightFrameType2_Phase3.SetActive(true);
+            }
         }
     }
 }
