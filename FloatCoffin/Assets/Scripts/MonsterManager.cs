@@ -48,9 +48,9 @@ public class MonsterManager : MonoBehaviour
     private void Awake() => Instance = this;
     private void Start()
     {
-        nextType1Spawn = Time.time + 0f;
-        nextType2Spawn = Time.time + 0f;
-        nextType3Spawn = Time.time + 0f;
+        nextType1Spawn = Time.time + 30f;
+        nextType2Spawn = Time.time + 36f;
+        nextType3Spawn = Time.time + 64f;
     }
     private void Update()
     {
