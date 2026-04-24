@@ -3678,12 +3678,12 @@ MonoBehaviour:
   - 4
   - 8
   - 5
-  - 2
+  - 1.5
   type1MaxFrameTimes:
   - 8
   - 10
   - 7
-  - 4
+  - 2.5
   silhouetteLeft: {fileID: 1365878717}
   silhouetteRight: {fileID: 1641342253}
   leftFramesType1:
@@ -3700,12 +3700,12 @@ MonoBehaviour:
   - 6
   - 6
   - 5
-  - 3
+  - 2
   type2MaxPhaseTimes:
   - 10
   - 10
   - 7
-  - 5
+  - 2.5
   leftFrameType2_Phase2: {fileID: 1193364243}
   leftFrameType2_Phase3: {fileID: 1137692372}
   rightFrameType2_Phase2: {fileID: 1592325942}
@@ -3725,7 +3725,7 @@ MonoBehaviour:
   type3MinPhaseTimes:
   - 10
   - 4
-  - 3
+  - 2
   type3MaxPhaseTimes:
   - 14
   - 7
