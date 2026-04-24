@@ -108,7 +108,7 @@ public class MonsterManager : MonoBehaviour
         {
             int frame = currentType1.currentFrame;
             bool left = currentType1.isGoingLeft;
-            if (frame >= 1 && frame <= 3)
+            if (frame >= 1 && frame <= 4)
             {
                 int idx = frame - 1;
                 if (left && leftFramesType1[idx]) leftFramesType1[idx].SetActive(true);

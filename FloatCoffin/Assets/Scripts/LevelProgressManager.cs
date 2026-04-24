@@ -27,7 +27,10 @@ public class LevelProgressManager : MonoBehaviour
     private void Update()
     {
         if (!isEngineWorking) return;
-        currentProgress += baseProgressSpeed * Time.deltaTime;
+        if (EnergyManager.Instance != null && EnergyManager.Instance.engineOn)
+        {
+            currentProgress += baseProgressSpeed * Time.deltaTime;
+        }
         if (currentProgress >= levelLength)
         {
             currentProgress = levelLength;
@@ -59,7 +62,7 @@ public class LevelProgressManager : MonoBehaviour
         isEngineWorking = false;
         enabled = false;
         Debug.Log("ПОБЕДА!");
-        // Здесь позже добавим красивый экран победы
+        if (VictoryScreen.Instance) VictoryScreen.Instance.Show();
         Time.timeScale = 0f;
     }
     public float GetNormalizedProgress() => currentProgress / levelLength;

@@ -10,10 +10,46 @@ public class EnergyManager : MonoBehaviour
     public bool radarOn = false;
     public bool strobeLeftOn = false;
     public bool strobeRightOn = false;
+    [Header("Кислород")]
+    public float oxygenLevel = 100f;
+    public float oxygenDrainRate = 2f;
+    public float oxygenRegenRate = 3f;
+    private bool oxygenSystemActive = false;
+    private bool hasOxygenDeathTriggered = false;
     private void Awake()
     {
-        if (Instance != null && Instance != this) Destroy(gameObject);
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
+        usedPower = 0;
+        oxygenOn = false;
+        engineOn = false;
+        radarOn = false;
+        strobeLeftOn = false;
+        strobeRightOn = false;
+    }
+    private void Update()
+    {
+        if (oxygenSystemActive)
+        {
+            oxygenLevel += oxygenRegenRate * Time.deltaTime;
+        }
+        else if (oxygenLevel > 0)
+        {
+            oxygenLevel -= oxygenDrainRate * Time.deltaTime;
+        }
+        oxygenLevel = Mathf.Clamp(oxygenLevel, 0f, 100f);
+        oxygenSystemActive = oxygenOn;
+        if (oxygenLevel <= 0 && !hasOxygenDeathTriggered)
+        {
+            hasOxygenDeathTriggered = true;
+            Debug.Log("Смерть от нехватки кислорода!");
+            if (DeathScreen.Instance != null)
+                DeathScreen.Instance.Show();
+        }
     }
     public bool TryToggleSystem(string systemName, bool turnOn)
     {
@@ -39,5 +75,9 @@ public class EnergyManager : MonoBehaviour
     public float GetEnergyFillAmount()
     {
         return (float)usedPower / maxPower;
+    }
+    public float GetRemainingEnergyFillAmount()
+    {
+        return 1f - ((float)usedPower / maxPower);
     }
 }

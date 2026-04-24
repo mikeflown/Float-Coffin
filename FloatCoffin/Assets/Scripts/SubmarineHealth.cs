@@ -32,6 +32,7 @@ public class SubmarineHealth : MonoBehaviour
     private void Die()
     {
         Debug.Log("ПОДЛОДКА УНИЧТОЖЕНА!");
+        if (DeathScreen.Instance) DeathScreen.Instance.Show();
         onDeath?.Invoke();
     }
     public void ResetHealth()
