@@ -7,10 +7,10 @@ public class MonsterType3 : MonoBehaviour
     private float currentPhaseDuration = 0f;
     private bool hasAttacked = false;
     [Header("Настройки отката")]
-    public float rollbackAmount = 30f;
+    public float rollbackAmount = 150f;
     [Header("Рандомное время фаз (3 фазы)")]
-    public float[] minPhaseTimes = new float[3] { 5.0f, 3.5f, 2.0f };
-    public float[] maxPhaseTimes = new float[3] { 8.0f, 5.5f, 3.5f };
+    public float[] minPhaseTimes = new float[3] { 10f, 4f, 3f };
+    public float[] maxPhaseTimes = new float[3] { 14f, 7f, 5f };
     public void Initialize(float[] minTimes, float[] maxTimes)
     {
         minPhaseTimes = minTimes;

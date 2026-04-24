@@ -6,34 +6,36 @@ public class MonsterManager : MonoBehaviour
 
     // ==================== TYPE 1 ====================
     [Header("Type 1")]
-    public float type1MinSpawnTime = 12f;
-    public float type1MaxSpawnTime = 25f;
-    public float[] type1MinFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
-    public float[] type1MaxFrameTimes = new float[4] { 4.0f, 3.2f, 2.5f, 1.5f };
-    [Header("Type 1 Визуалы (внутри стробоскопов)")]
+    public float type1MinSpawnTime = 75f;
+    public float type1MaxSpawnTime = 110f;
+    public float[] type1MinFrameTimes = new float[4] { 4f, 8f, 5f, 2f };
+    public float[] type1MaxFrameTimes = new float[4] { 8f, 10f, 7f, 4f };
+    [Header("Type 1 Визуалы")]
+    public GameObject silhouetteLeft;
+    public GameObject silhouetteRight;
     public GameObject[] leftFramesType1 = new GameObject[3];
     public GameObject[] rightFramesType1 = new GameObject[3];
 
     // ==================== TYPE 2 ====================
     [Header("Type 2")]
-    public float type2MinSpawnTime = 15f;
-    public float type2MaxSpawnTime = 30f;
-    public float[] type2MinPhaseTimes = new float[4] { 3.0f, 2.5f, 2.0f, 1.2f };
-    public float[] type2MaxPhaseTimes = new float[4] { 5.5f, 4.5f, 3.5f, 2.0f };
-    [Header("Type 2 Визуалы (внутри стробоскопов)")]
+    public float type2MinSpawnTime = 85f;
+    public float type2MaxSpawnTime = 120f;
+    public float[] type2MinPhaseTimes = new float[4] { 6f, 6f, 5f, 3f };
+    public float[] type2MaxPhaseTimes = new float[4] { 10f, 10f, 7f, 5f };
+    [Header("Type 2 Визуалы")]
     public GameObject leftFrameType2_Phase2;
     public GameObject leftFrameType2_Phase3;
     public GameObject rightFrameType2_Phase2;
     public GameObject rightFrameType2_Phase3;
     public GameObject[] leftRadarImages = new GameObject[4];
     public GameObject[] rightRadarImages = new GameObject[4];
-
+    
     // ==================== TYPE 3 ====================
     [Header("Type 3")]
-    public float type3MinSpawnTime = 25f;
-    public float type3MaxSpawnTime = 45f;
-    public float[] type3MinPhaseTimes = new float[3] { 5.0f, 3.5f, 2.0f };
-    public float[] type3MaxPhaseTimes = new float[3] { 8.0f, 5.5f, 3.5f };
+    public float type3MinSpawnTime = 110f;
+    public float type3MaxSpawnTime = 150f;
+    public float[] type3MinPhaseTimes = new float[3] { 10f, 4f, 3f };
+    public float[] type3MaxPhaseTimes = new float[3] { 14f, 7f, 5f };
     [Header("Type 3 Визуалы")]
     public GameObject[] centerFramesType3 = new GameObject[3];
     private MonsterType1 currentType1;
@@ -46,9 +48,9 @@ public class MonsterManager : MonoBehaviour
     private void Awake() => Instance = this;
     private void Start()
     {
-        nextType1Spawn = Time.time + Random.Range(type1MinSpawnTime, type1MaxSpawnTime);
-        nextType2Spawn = Time.time + Random.Range(type2MinSpawnTime, type2MaxSpawnTime);
-        nextType3Spawn = Time.time + Random.Range(type3MinSpawnTime, type3MaxSpawnTime);
+        nextType1Spawn = Time.time + 0f;
+        nextType2Spawn = Time.time + 0f;
+        nextType3Spawn = Time.time + 0f;
     }
     private void Update()
     {
@@ -94,6 +96,8 @@ public class MonsterManager : MonoBehaviour
     }
     private void UpdateVisuals()
     {
+        if (silhouetteLeft) silhouetteLeft.SetActive(false);
+        if (silhouetteRight) silhouetteRight.SetActive(false);
         foreach (var f in leftFramesType1) if (f) f.SetActive(false);
         foreach (var f in rightFramesType1) if (f) f.SetActive(false);
         if (leftFrameType2_Phase2) leftFrameType2_Phase2.SetActive(false);
@@ -103,19 +107,22 @@ public class MonsterManager : MonoBehaviour
         foreach (var f in centerFramesType3) if (f) f.SetActive(false);
         foreach (var img in leftRadarImages) if (img) img.SetActive(false);
         foreach (var img in rightRadarImages) if (img) img.SetActive(false);
-        // === TYPE 1 ===
         if (currentType1 != null)
         {
             int frame = currentType1.currentFrame;
             bool left = currentType1.isGoingLeft;
-            if (frame >= 1 && frame <= 4)
+            if (frame == 0)
+            {
+                if (silhouetteLeft) silhouetteLeft.SetActive(left);
+                if (silhouetteRight) silhouetteRight.SetActive(!left);
+            }
+            else if (frame >= 1 && frame <= 3)
             {
                 int idx = frame - 1;
                 if (left && leftFramesType1[idx]) leftFramesType1[idx].SetActive(true);
                 if (!left && rightFramesType1[idx]) rightFramesType1[idx].SetActive(true);
             }
         }
-        // === TYPE 2 ===
         if (currentType2 != null)
         {
             int phase = currentType2.currentPhase;
@@ -130,10 +137,13 @@ public class MonsterManager : MonoBehaviour
                 if (left && leftFrameType2_Phase3) leftFrameType2_Phase3.SetActive(true);
                 if (!left && rightFrameType2_Phase3) rightFrameType2_Phase3.SetActive(true);
             }
-            if (phase >= 0 && phase < 4)
+            if (EnergyManager.Instance != null && EnergyManager.Instance.radarOn)
             {
-                if (left && leftRadarImages[phase]) leftRadarImages[phase].SetActive(true);
-                if (!left && rightRadarImages[phase]) rightRadarImages[phase].SetActive(true);
+                if (phase >= 0 && phase < 4)
+                {
+                    if (left && leftRadarImages[phase]) leftRadarImages[phase].SetActive(true);
+                    if (!left && rightRadarImages[phase]) rightRadarImages[phase].SetActive(true);
+                }
             }
         }
         if (currentType3 != null)
@@ -143,13 +153,10 @@ public class MonsterManager : MonoBehaviour
                 centerFramesType3[phase].SetActive(true);
         }
     }
-    
-    // ==================== МЕТОДЫ ОТПУГИВАНИЯ ====================
     public bool RepelType1(Side side)
     {
         if (currentType1 == null) return false;
-        if (currentType1.currentFrame >= 2) return false;
-
+        if (currentType1.currentFrame < 2) return false;
         Destroy(currentType1.gameObject);
         currentType1 = null;
         return true;
@@ -158,7 +165,6 @@ public class MonsterManager : MonoBehaviour
     {
         if (currentType2 == null) return false;
         if (currentType2.currentPhase < 2) return false;
-
         Destroy(currentType2.gameObject);
         currentType2 = null;
         return true;
@@ -167,7 +173,6 @@ public class MonsterManager : MonoBehaviour
     {
         if (currentType3 == null) return false;
         if (currentType3.currentPhase < 2) return false;
-
         Destroy(currentType3.gameObject);
         currentType3 = null;
         return true;

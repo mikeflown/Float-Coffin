@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SystemPowerToggle : MonoBehaviour
+public class SystemPowerToggle1 : MonoBehaviour
 {
     public string systemName;
     public Button offButton;

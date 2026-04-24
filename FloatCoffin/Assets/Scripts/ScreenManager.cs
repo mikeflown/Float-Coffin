@@ -23,10 +23,20 @@ public class ScreenManager : MonoBehaviour
     }
     public void GoToUnderWaterLeft()
     {
+        if (EnergyManager.Instance == null || !EnergyManager.Instance.strobeLeftOn)
+        {
+            Debug.Log("Стробоскоп L выключен! Включи его в планшете энергии.");
+            return;
+        }
         ShowScreen(underWaterLeft);
     }
     public void GoToUnderWaterRight()
     {
+        if (EnergyManager.Instance == null || !EnergyManager.Instance.strobeRightOn)
+        {
+            Debug.Log("Стробоскоп R выключен! Включи его в планшете энергии.");
+            return;
+        }
         ShowScreen(underWaterRight);
     }
     public void GoBack()

@@ -8,8 +8,8 @@ public class MonsterType1 : MonoBehaviour
     private float currentFrameDuration = 0f;
     private bool hasAttacked = false;
     [Header("Рандомный промежуток времени для каждой фазы")]
-    public float[] minFrameTimes = new float[4] { 2.5f, 1.8f, 1.2f, 0.8f };
-    public float[] maxFrameTimes = new float[4] { 4.0f, 3.2f, 2.5f, 1.5f };
+    public float[] minFrameTimes = new float[4] { 4f, 8f, 5f, 2f };
+    public float[] maxFrameTimes = new float[4] { 8f, 10f, 7f, 4f };
     public void Initialize(bool goingLeft, float[] minTimes, float[] maxTimes)
     {
         isGoingLeft = goingLeft;
