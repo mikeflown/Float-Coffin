@@ -48,7 +48,7 @@ public class MonsterManager : MonoBehaviour
     private void Awake() => Instance = this;
     private void Start()
     {
-        nextType1Spawn = Time.time + 30f;
+        nextType1Spawn = Time.time + 24f;
         nextType2Spawn = Time.time + 36f;
         nextType3Spawn = Time.time + 64f;
     }
@@ -156,7 +156,7 @@ public class MonsterManager : MonoBehaviour
     public bool RepelType1(Side side)
     {
         if (currentType1 == null) return false;
-        if (currentType1.currentFrame < 2) return false;
+        if (currentType1.currentFrame < 3) return false;
         Destroy(currentType1.gameObject);
         currentType1 = null;
         return true;
@@ -164,7 +164,7 @@ public class MonsterManager : MonoBehaviour
     public bool RepelType2(Side side)
     {
         if (currentType2 == null) return false;
-        if (currentType2.currentPhase < 2) return false;
+        if (currentType2.currentPhase < 3) return false;
         Destroy(currentType2.gameObject);
         currentType2 = null;
         return true;

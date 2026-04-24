@@ -3597,8 +3597,8 @@ GameObject:
   - component: {fileID: 598385236}
   - component: {fileID: 598385242}
   - component: {fileID: 598385241}
-  - component: {fileID: 598385240}
   - component: {fileID: 598385239}
+  - component: {fileID: 598385240}
   - component: {fileID: 598385238}
   - component: {fileID: 598385237}
   m_Layer: 0
@@ -3672,8 +3672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8c327588fe9fb54db50ce6b34041eef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterManager
-  type1MinSpawnTime: 75
-  type1MaxSpawnTime: 110
+  type1MinSpawnTime: 42
+  type1MaxSpawnTime: 56
   type1MinFrameTimes:
   - 4
   - 8
@@ -3684,20 +3684,18 @@ MonoBehaviour:
   - 10
   - 7
   - 4
-  silhouetteLeft: {fileID: 0}
-  silhouetteRight: {fileID: 0}
+  silhouetteLeft: {fileID: 1365878717}
+  silhouetteRight: {fileID: 1641342253}
   leftFramesType1:
-  - {fileID: 1365878717}
   - {fileID: 1249406921}
   - {fileID: 880044316}
   - {fileID: 1631106173}
   rightFramesType1:
-  - {fileID: 1641342253}
   - {fileID: 168264564}
   - {fileID: 167983943}
   - {fileID: 2144674258}
-  type2MinSpawnTime: 85
-  type2MaxSpawnTime: 120
+  type2MinSpawnTime: 47
+  type2MaxSpawnTime: 53
   type2MinPhaseTimes:
   - 6
   - 6
@@ -3722,8 +3720,8 @@ MonoBehaviour:
   - {fileID: 320251621}
   - {fileID: 422260286}
   - {fileID: 1228005865}
-  type3MinSpawnTime: 110
-  type3MaxSpawnTime: 150
+  type3MinSpawnTime: 70
+  type3MaxSpawnTime: 90
   type3MinPhaseTimes:
   - 10
   - 4
@@ -3799,7 +3797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57bf7ec72edeb97449900a5458d00b6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RepelButton
-  targetType: 0
+  targetType: 1
   targetSide: 1
   requiredPhase: 4
   cooldownTime: 8
@@ -3905,8 +3903,8 @@ MonoBehaviour:
   type3BreakChance: 20
   oxygenFullBreakChance: 50
   oxygenFullBreakInterval: 1
-  randomBreakChance: 20
-  randomBreakInterval: 140
+  randomBreakChance: 80
+  randomBreakInterval: 74
 --- !u!1 &618355938
 GameObject:
   m_ObjectHideFlags: 0
@@ -9863,13 +9861,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592325942}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.13052596, w: 0.99144495}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 723294357}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 15}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 448, y: 216}
