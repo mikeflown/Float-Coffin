@@ -6,7 +6,6 @@ public class MainMenuManager : MonoBehaviour
     [Header("Панели")]
     public GameObject mainMenuPanel;
     public GameObject settingsPanel;
-
     private void Start()
     {
         GameObject[] menuButtons = GameObject.FindGameObjectsWithTag("MainMenuButton");
@@ -31,8 +30,6 @@ public class MainMenuManager : MonoBehaviour
     public void QuitGame()
     {
         Debug.Log("Игра закрывается...");
-
-        // Это работает в билде и правильно завершает игру в редакторе
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else
